@@ -1,0 +1,316 @@
+﻿<Window x:Class="TraceView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ta="clr-namespace:TraceAnalysis;assembly=TraceAnalysis"
+        Title="Trace View" Height="350" Width="525">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="tbTraceFilename" Grid.Column="0" />
+            
+            <Button x:Name="btnLoad" Grid.Column="1" 
+                Content="Load"
+                Click="btnLoad_Click"/>
+
+            <Button x:Name="btnExpandAll" Grid.Column="3"
+                Content="Expand All"
+                Click="btnExpandAll_Click"/>
+        </Grid>
+
+        <TreeView x:Name="treeview" Grid.Row="1" Grid.ColumnSpan="3" 
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                  <!--ItemsSource="{Binding Path=TreeRoot}">-->
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceEntry}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <!--orderBrush="Black" BorderThickness="1" CornerRadius="2">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Content}"/>
+                        </StackPanel>
+                    </Border>-->
+                    <StackPanel Background="LightGray" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TracePublish}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Background="YellowGreen" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceMessage}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="Salmon" ToolTip="{Binding Description}">
+                        <TextBlock Text="Message:" FontWeight="Bold"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="{Binding Path=Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceMessageLine}">
+                    <StackPanel ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:ApplicationMessage}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="Salmon" ToolTip="{Binding Description}">
+                        <TextBlock Text="Message:" FontWeight="Bold"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="{Binding Path=Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type ta:ApplicationMessageLine}">
+                    <StackPanel ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceQueryPlan}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Background="Khaki" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceQueryStatistics}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Background="Gold" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceQueryDetail}">
+                    <StackPanel ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Content}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceStartupProcedure}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LightGreen" ToolTip="{Binding Description}">
+                        <TextBlock Text="Startup Procedure"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="{Binding Path=Procedure}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceRun}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LightBlue" ToolTip="{Binding Description}">
+                        <!--<TextBlock Text="Run"/>-->
+                        <TextBlock Text="RUN" FontWeight="Normal"/>
+                        <TextBlock Width="5"/>
+                        <!--<TextBlock Text="{Binding Path=Procedure}"/>
+                        <TextBlock Width="10"/>-->
+                        <TextBlock Text="{Binding Path=InternalProcedure}" FontWeight="Normal"/>
+                        <TextBlock Width="5"/>
+
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}" FontWeight="Normal"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}" FontWeight="Normal"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceNew}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LightBlue" ToolTip="{Binding Description}">
+                        <!--<TextBlock Text="Run"/>-->
+                        <TextBlock Text="NEW"/>
+                        <TextBlock Width="10"/>
+                        <!--<TextBlock Text="{Binding Path=Procedure}"/>
+                        <TextBlock Width="10"/>-->
+                        <TextBlock Text="{Binding Path=ClassName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceInvoke}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LightBlue" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Path=ClassName}"/>
+                        <TextBlock Text="."/>
+                        <TextBlock Text="{Binding Path=MethodName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text=" -> ["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceInvokePropGet}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="PaleGreen" ToolTip="{Binding Description}">
+                        <!--<TextBlock Text="Run"/>-->
+                        <TextBlock Text="get "/>
+                        <TextBlock Text="{Binding Path=ClassName}"/>
+                        <TextBlock Text="."/>
+                        <TextBlock Text="{Binding Path=PropertyName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceInvokePropSet}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="Coral" ToolTip="{Binding Description}">
+                        <TextBlock Text="set "/>
+                        <TextBlock Text="{Binding Path=PropertyName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=DisplayParameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text=" -> ["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceSuper}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LightBlue" ToolTip="{Binding Description}">
+                        <!--<TextBlock Text="Run"/>-->
+                        <TextBlock Text="Super"/>
+                        <TextBlock Width="10"/>
+                        <!--<TextBlock Text="{Binding Path=Procedure}"/>
+                        <TextBlock Width="10"/>-->
+                        <TextBlock Text="{Binding Path=MethodName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceRunMain}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="DeepSkyBlue" ToolTip="{Binding Description}">
+                        <TextBlock Text="RUN" FontWeight="Normal"/>
+                        <TextBlock Width="5"/>
+                        <TextBlock Text="{Binding Path=Procedure}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceReturn}">
+                    <StackPanel Orientation="Horizontal" ToolTip="{Binding Description}">
+                        <TextBlock Text="ReturnValue"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceFunc}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="LimeGreen" ToolTip="{Binding Description}">
+                        <TextBlock Text="{Binding Path=Function}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceFuncPropGet}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="PaleGreen" ToolTip="{Binding Description}">
+                        <TextBlock Text="get "/>
+                        <TextBlock Text="{Binding Path=PropertyName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type ta:TraceFuncPropSet}"
+                                          ItemsSource="{Binding Path=Children}">
+                    <StackPanel Orientation="Horizontal" Background="Coral" ToolTip="{Binding Description}">
+                        <TextBlock Text="set "/>
+                        <TextBlock Text="{Binding Path=PropertyName}"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="("/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
+                        <TextBlock Text=")"/>
+                        <TextBlock Width="10"/>
+                        <TextBlock Text="-> ["/>
+                        <TextBlock Text="{Binding Path=ReturnValue}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+
+            <!--<TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType = "{x:Type ta:TraceEntry}"
+                                          ItemsSource = "{Binding Path=Children}">
+                    <Border BorderBrush="Black" BorderThickness="2" CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Margin="10,0,0,0" Text="{Binding Description}"/>
+                        </StackPanel>
+                    </Border>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>-->
+        </TreeView>
+    </Grid>
+</Window>
