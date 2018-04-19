@@ -12,6 +12,7 @@
                 <Setter Property="FontWeight" Value="Normal" />
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Foreground" Value="Black" />
                         <Setter Property="FontWeight" Value="Bold" />
                     </Trigger>
                 </Style.Triggers>
@@ -19,7 +20,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-        <Grid>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -34,21 +35,22 @@
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="tbTraceFilename" Grid.Column="0" />
-            
+
             <Button x:Name="btnLoad" Grid.Column="1" 
                 Content="Load"
                 Click="btnLoad_Click"/>
 
-            <Button x:Name="btnExpandAll" Grid.Column="3"
+            <Button x:Name="btnExpandAll" Grid.Column="2"
                 Content="Expand All"
-                Click="btnExpandAll_Click"/>
+                Click="btnExpandAll_Click" Grid.ColumnSpan="2" Margin="112,0,0.4,-0.2"/>
+            <Button Content="Truncate" Grid.Column="2" HorizontalAlignment="Left" Margin="21,0,0,-0.2" VerticalAlignment="Top" Width="65" Height="29" Click="Button_Click"/>
         </Grid>
 
         <TreeView x:Name="treeview" Grid.Row="1" Grid.ColumnSpan="3" 
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                  <!--ItemsSource="{Binding Path=TreeRoot}">-->
+            <!--ItemsSource="{Binding Path=TreeRoot}">-->
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type ta:TraceEntry}"
                                           ItemsSource="{Binding Path=Children}">
@@ -72,7 +74,7 @@
                 <HierarchicalDataTemplate DataType="{x:Type ta:TraceMessage}"
                                           ItemsSource="{Binding Path=Children}">
                     <StackPanel Orientation="Horizontal" Background="Salmon" ToolTip="{Binding Description}">
-                        <TextBlock Text="Message:" FontWeight="Bold"/>
+                        <TextBlock Text="Message:"/>
                         <TextBlock Width="10"/>
                         <TextBlock Text="{Binding Path=Content}"/>
                     </StackPanel>
@@ -86,7 +88,7 @@
                 <HierarchicalDataTemplate DataType="{x:Type ta:ApplicationMessage}"
                                           ItemsSource="{Binding Path=Children}">
                     <StackPanel Orientation="Horizontal" Background="Salmon" ToolTip="{Binding Description}">
-                        <TextBlock Text="Message:" FontWeight="Bold"/>
+                        <TextBlock Text="Message:"/>
                         <TextBlock Width="10"/>
                         <TextBlock Text="{Binding Path=Content}"/>
                     </StackPanel>
@@ -128,15 +130,15 @@
                                           ItemsSource="{Binding Path=Children}">
                     <StackPanel Orientation="Horizontal" Background="LightBlue" ToolTip="{Binding Description}">
                         <!--<TextBlock Text="Run"/>-->
-                        <TextBlock Text="RUN" FontWeight="Normal"/>
+                        <TextBlock Text="RUN"/>
                         <TextBlock Width="5"/>
                         <!--<TextBlock Text="{Binding Path=Procedure}"/>
                         <TextBlock Width="10"/>-->
-                        <TextBlock Text="{Binding Path=InternalProcedure}" FontWeight="Normal"/>
+                        <TextBlock Text="{Binding Path=InternalProcedure}"/>
                         <TextBlock Width="5"/>
 
                         <TextBlock Text="("/>
-                        <TextBlock Text="{Binding Path=Parameters}" FontWeight="Normal"/>
+                        <TextBlock Text="{Binding Path=Parameters}"/>
                         <TextBlock Text=")"/>
                         <TextBlock Width="10"/>
                         <TextBlock Text="["/>
@@ -236,7 +238,7 @@
                 <HierarchicalDataTemplate DataType="{x:Type ta:TraceRunMain}"
                                           ItemsSource="{Binding Path=Children}">
                     <StackPanel Orientation="Horizontal" Background="DeepSkyBlue" ToolTip="{Binding Description}">
-                        <TextBlock Text="RUN" FontWeight="Normal"/>
+                        <TextBlock Text="RUN"/>
                         <TextBlock Width="5"/>
                         <TextBlock Text="{Binding Path=Procedure}"/>
                         <TextBlock Width="10"/>

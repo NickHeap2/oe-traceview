@@ -83,6 +83,11 @@ namespace TraceView
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
+            LoadFile();
+        }
+
+        private void LoadFile()
+        {
             if (!File.Exists(tbTraceFilename.Text))
             {
                 MessageBox.Show(string.Format("File {0} not found!", tbTraceFilename.Text), "File not found");
@@ -105,7 +110,6 @@ namespace TraceView
             this.TreeRoot.Add(traceAnal.TraceEntryTree);
             treeview.ItemsSource = this.TreeRoot;
             Console.WriteLine("Tree built.");
-
         }
 
         private void btnExpandAll_Click(object sender, RoutedEventArgs e)
@@ -119,6 +123,7 @@ namespace TraceView
         {
             //Debug.WriteLine("Expanding {0}", traceEntry.AtLine);
 
+            treeview.BeginInit();
             traceEntry.Initialising = true;
             traceEntry.IsExpanded = true;
             traceEntry.Initialising = false;
@@ -126,6 +131,7 @@ namespace TraceView
             {
                 ExpandNode(child);
             }
+            treeview.EndInit();
             //Debug.WriteLine("   Expanded {0}", traceEntry.AtLine);
         }
 
@@ -140,6 +146,22 @@ namespace TraceView
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!File.Exists(tbTraceFilename.Text))
+            {
+                MessageBox.Show(string.Format("File {0} not found!", tbTraceFilename.Text), "File not found");
+                return;
+            }
+
+            using (FileStream fileStream = new FileStream(tbTraceFilename.Text, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            {
+                fileStream.SetLength(0);
+            }
+
+            LoadFile();
         }
     }
 }
