@@ -738,7 +738,7 @@ namespace TraceAnalysis
         //    }
         //}
 
-        private void ExpandNode(TraceEntry traceEntry)
+        public void ExpandNode(TraceEntry traceEntry)
         {
             traceEntry.IsExpanded = true;
             foreach (var child in traceEntry.Children)
@@ -747,12 +747,39 @@ namespace TraceAnalysis
             }
         }
 
-        private void ExpandParents(TraceEntry traceEntry)
+        public void CollapseNode(TraceEntry traceEntry)
+        {
+            traceEntry.IsExpanded = false;
+            foreach (var child in traceEntry.Children)
+            {
+                CollapseNode(child);
+            }
+        }
+
+        public void ExpandParents(TraceEntry traceEntry)
         {
             traceEntry.IsExpanded = true;
             if (traceEntry.Parent != null)
             {
                 ExpandParents(traceEntry.Parent);
+            }
+        }
+
+        public void SearchForText(TraceEntry traceEntry, string textToFind)
+        {
+            if (traceEntry.Content.IndexOf(textToFind, StringComparison.InvariantCultureIgnoreCase) >= 0)
+            {
+                traceEntry.IsHighlighted = true;
+                ExpandParents(traceEntry.Parent);
+            }
+            else
+            {
+                traceEntry.IsHighlighted = false;
+            }
+            // call on children
+            foreach (var child in traceEntry.Children)
+            {
+                SearchForText(child, textToFind);
             }
         }
     }

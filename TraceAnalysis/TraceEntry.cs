@@ -71,6 +71,20 @@ namespace TraceAnalysis
             }
         }
 
+        private bool _isHighlighted = false;
+        public bool IsHighlighted
+        {
+            get { return _isHighlighted; }
+            set
+            {
+                if (value != _isHighlighted)
+                {
+                    _isHighlighted = value;
+                    this.OnPropertyChanged("IsHighlighted");
+                }
+            }
+        }
+
         public TraceEntry(DateTime occurredAt, string content)
         {
             this.OccurredAt = occurredAt;

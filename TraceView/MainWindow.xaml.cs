@@ -57,6 +57,8 @@ namespace TraceView
             }
         }
 
+        private TraceAnal traceAnal = null;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -95,7 +97,7 @@ namespace TraceView
             }
 
             Console.WriteLine("Building tree");
-            TraceAnal traceAnal = new TraceAnal();
+            traceAnal = new TraceAnal();
             try
             {
                 traceAnal.Analyse(tbTraceFilename.Text);
@@ -114,26 +116,43 @@ namespace TraceView
 
         private void btnExpandAll_Click(object sender, RoutedEventArgs e)
         {
-            treeview.BeginInit();
-            ExpandNode(TreeRoot[0]);
-            treeview.EndInit();
-        }
-
-        private void ExpandNode(TraceEntry traceEntry)
-        {
-            //Debug.WriteLine("Expanding {0}", traceEntry.AtLine);
-
-            treeview.BeginInit();
-            traceEntry.Initialising = true;
-            traceEntry.IsExpanded = true;
-            traceEntry.Initialising = false;
-            foreach (var child in traceEntry.Children)
+            if (traceAnal == null)
             {
-                ExpandNode(child);
+                return;
             }
+
+            treeview.BeginInit();
+            traceAnal.ExpandNode(TreeRoot[0]);
             treeview.EndInit();
-            //Debug.WriteLine("   Expanded {0}", traceEntry.AtLine);
         }
+
+        private void btnCollapseAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (traceAnal == null)
+            {
+                return;
+            }
+
+            treeview.BeginInit();
+            traceAnal.CollapseNode(TreeRoot[0]);
+            treeview.EndInit();
+        }
+
+        //private void ExpandNode(TraceEntry traceEntry)
+        //{
+        //    //Debug.WriteLine("Expanding {0}", traceEntry.AtLine);
+
+        //    treeview.BeginInit();
+        //    traceEntry.Initialising = true;
+        //    traceEntry.IsExpanded = true;
+        //    traceEntry.Initialising = false;
+        //    foreach (var child in traceEntry.Children)
+        //    {
+        //        ExpandNode(child);
+        //    }
+        //    treeview.EndInit();
+        //    //Debug.WriteLine("   Expanded {0}", traceEntry.AtLine);
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -148,7 +167,7 @@ namespace TraceView
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void btnTruncate_Click(object sender, RoutedEventArgs e)
         {
             if (!File.Exists(tbTraceFilename.Text))
             {
@@ -162,6 +181,20 @@ namespace TraceView
             }
 
             LoadFile();
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if (traceAnal == null)
+            {
+                return;
+            }
+            string searchText = tbSearchBox.Text;
+
+            treeview.BeginInit();
+            traceAnal.CollapseNode(TreeRoot[0]);
+            traceAnal.SearchForText(TreeRoot[0], searchText);
+            treeview.EndInit();
         }
     }
 }
