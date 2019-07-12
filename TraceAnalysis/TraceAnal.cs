@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace TraceAnalysis
         public void Analyse(string filename)
         {
             HideFunctions = new List<string>();
-            HideFunctions.Add("getSPFtext");
+            //HideFunctions.Add("getSPFtext");
             //HideFunctions.Add("");
             //HideFunctions.Add("");
             //HideFunctions.Add("");
@@ -224,7 +225,13 @@ namespace TraceAnalysis
                                     TraceStartupProcedure traceStartupProcedure = new TraceStartupProcedure(th.OccurredAt, contentParts[i + 3]);
                                     traceStartupProcedure.TraceEntryType = TraceEntryTypes.StartupProcedure;
 
-                                    ReturnPoints.Push(new ReturnPoint(traceStartupProcedure.InternalProcedure, traceStartupProcedure.Procedure, traceStartupProcedure));
+                                    var returnPointProcedure = traceStartupProcedure.InternalProcedure;
+                                    if (returnPointProcedure == null)
+                                    {
+                                        returnPointProcedure = traceStartupProcedure.InInternalProcedure;
+                                    }
+
+                                    ReturnPoints.Push(new ReturnPoint(returnPointProcedure, traceStartupProcedure.Procedure, traceStartupProcedure));
                                     traceStartupProcedure.Parent = currentEntry;
                                     currentEntry.Children.Add(traceStartupProcedure);
                                     currentEntry = traceStartupProcedure;
@@ -347,7 +354,9 @@ namespace TraceAnalysis
                                 //}
 
                                 ReturnPoint returnPoint = ReturnPoints.Peek();
-                                
+
+                                Debug.Assert(returnPoint.ReturnFrom != null);
+                                Debug.Assert(traceReturn.ReturnFrom != null);
 
                                 if (string.Compare(returnPoint.ReturnFrom, traceReturn.ReturnFrom, true) == 0
                                     || (returnPoint.ReturnFrom.Contains('.')

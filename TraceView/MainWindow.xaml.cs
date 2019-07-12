@@ -73,7 +73,7 @@ namespace TraceView
                 Console.WriteLine();
             }
 
-            tbTraceFilename.Text = @"D:\workspaces\oe-traceview\input.log";
+            tbTraceFilename.Text = @"D:\workspaces\nickheap2\oe-traceview\input.log";
 
             //treeview.DataContext = this;
         }

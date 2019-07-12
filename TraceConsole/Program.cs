@@ -16,8 +16,8 @@ namespace TraceConsole
             int indentLevel = 0;
             threshold = TimeSpan.FromMinutes(1);
 
-            string filename = @"D:\workspaces\oe-traceview\input.log";
-            string outputFile = @"C:\temp\anal.txt";
+            string filename = "";
+            string outputFile = @"output.txt";
             try
             {
                 if (args.Length == 0)
