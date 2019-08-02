@@ -89,6 +89,7 @@ namespace TraceAnalysis
         {
             this.OccurredAt = occurredAt;
             this.Initialising = false;
+            this.TraceEntryType = TraceEntryTypes._4GLTrace;
 
             Children = new List<TraceEntry>();
 

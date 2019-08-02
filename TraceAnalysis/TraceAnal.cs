@@ -145,6 +145,7 @@ namespace TraceAnalysis
                             TraceSession traceSession = new TraceSession(th.OccurredAt, config);
                             //link parent and children
                             traceSession.Parent = currentEntry;
+                            traceSession.TraceEntryType = tet;
                             currentEntry.Children.Add(traceSession);
                             currentEntry = traceSession;
                         }
